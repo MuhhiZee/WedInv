@@ -50,7 +50,7 @@ if not st.session_state.terbuka:
 # TAMPILAN 2: JIKA UNDANGAN SUDAH DIBUKA (KONTEN UTAMA + MUSIK)
 else:
     # --- PROSES MEMUTAR MUSIK DI LATAR BELAKANG ---
-    audio_file = "musik/wedding.mp3"
+    audio_file = "music/wedding.mp3"
     try:
         with open(audio_file, "rb") as f:
             audio_bytes = f.read()
