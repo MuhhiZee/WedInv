@@ -2,6 +2,28 @@ import streamlit as st
 import base64
 from pathlib import Path
 
+# --- Tambahkan Fungsi Musik Latar Tersembunyi ---
+def play_background_music(audio_path):
+    try:
+        with open(audio_path, "rb") as f:
+            audio_bytes = f.read()
+        
+        # Konversi file audio ke format base64 agar bisa dibaca HTML inline
+        audio_base64 = base64.b64encode(audio_bytes).decode()
+        audio_html = f"""
+            <audio autoplay loop style="display:none;">
+                <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
+            </audio>
+        """
+        st.markdown(audio_html, unsafe_allow_html=True)
+    except FileNotFoundError:
+        st.warning("File musik/wedding.mp3 tidak ditemukan.")
+
+# Panggil fungsi ini di bagian kode mana saja (misalnya setelah cover)
+play_background_music("musik/wedding.mp3")
+# ------------------------------------------------
+
+
 st.set_page_config(
     page_title="Undangan Pernikahan",
     page_icon="💍",
