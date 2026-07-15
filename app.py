@@ -17,10 +17,10 @@ def play_background_music(audio_path):
         """
         st.markdown(audio_html, unsafe_allow_html=True)
     except FileNotFoundError:
-        st.warning("File musik/wedding.mp3 tidak ditemukan.")
+        st.warning("File music/wedding.mp3 tidak ditemukan.")
 
 # Panggil fungsi ini di bagian kode mana saja (misalnya setelah cover)
-play_background_music("musik/wedding.mp3")
+play_background_music("music/wedding.mp3")
 # ------------------------------------------------
 
 
