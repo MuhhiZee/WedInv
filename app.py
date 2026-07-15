@@ -64,9 +64,8 @@ else:
         
         # Eksekusi pemutar audio Streamlit dengan Autoplay aktif (Lolos blokir karena dipicu st.button)
         st.audio(audio_bytes, format="audio/mp3", autoplay=True, loop=True)
-        st.caption("🎵 Musik sedang diputar otomatis...")
     except FileNotFoundError:
-        st.error("⚠️ File 'musik/wedding.mp3' tidak ditemukan. Pastikan folder dan nama file sudah benar.")
+        st.error("⚠️ File 'music/wedding.mp3' tidak ditemukan. Pastikan folder dan nama file sudah benar.")
 
     # --- KONTEN UTAMA UNDANGAN ---
     st.markdown(
