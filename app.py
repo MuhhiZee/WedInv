@@ -57,7 +57,7 @@ if not st.session_state.terbuka:
 # ====================================================================
 else:
     # --- PROSES MEMUTAR AUDIO OTOMATIS SETELAH DIKLIK ---
-    audio_file = "musik/wedding.mp3"
+    audio_file = "music/wedding.mp3"
     try:
         with open(audio_file, "rb") as f:
             audio_bytes = f.read()
