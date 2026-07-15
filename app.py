@@ -19,11 +19,15 @@ load_css()
 guest = st.query_params.get("to", "Tamu Undangan")
 
 # Cover
+# Cover Image
+st.image("images/cover.jpg", use_container_width=True)
+
 st.markdown(
-    """
-    <div class='cover'>
-        <h3>The Wedding Of</h3>
-        <h1>Andi & Siti</h1>
+    f"""
+    <div style="text-align:center; margin-top:-80px; padding-bottom:30px;">
+        <h3 style="color:white;">Kepada Yth.</h3>
+        <h1 style="color:white;">{guest}</h1>
+        <p style="color:white;">Mohon maaf apabila ada kesalahan penulisan nama.</p>
     </div>
     """,
     unsafe_allow_html=True
