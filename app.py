@@ -22,7 +22,7 @@ load_css()
 guest = st.query_params.get("to", "Tamu Undangan")
 
 # --- PROSES KONVERSI AUDIO KE BASE64 ---
-audio_file = "musik/wedding.mp3"
+audio_file = "music/wedding.mp3"
 audio_base64 = ""
 
 try:
@@ -30,7 +30,7 @@ try:
         audio_bytes = f.read()
     audio_base64 = base64.b64encode(audio_bytes).decode()
 except FileNotFoundError:
-    st.error("⚠️ File 'musik/wedding.mp3' tidak ditemukan. Pastikan folder dan nama file sudah benar.")
+    st.error("⚠️ File 'music/wedding.mp3' tidak ditemukan. Pastikan folder dan nama file sudah benar.")
 
 # --- INJEKSI HTML, AUDIO, DAN JAVASCRIPT BYPASS BROWSER ---
 # Musik disembunyikan dan dikontrol langsung via klik tombol "Buka Undangan" menggunakan Javascript murni
