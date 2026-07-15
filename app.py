@@ -14,191 +14,185 @@ def load_css():
         with open("style.css") as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
     except FileNotFoundError:
-        pass # Mengabaikan jika style.css belum dibuat
+        pass
 
 load_css()
 
 # Ambil nama tamu dari URL
 guest = st.query_params.get("to", "Tamu Undangan")
 
+# --- PROSES KONVERSI AUDIO KE BASE64 ---
+audio_file = "musik/wedding.mp3"
+audio_base64 = ""
 
-# --- PENGATURAN STATUS PEMBUKAAN UNDANGAN & MUSIK ---
-if "terbuka" not in st.session_state:
-    st.session_state.terbuka = False
+try:
+    with open(audio_file, "rb") as f:
+        audio_bytes = f.read()
+    audio_base64 = base64.b64encode(audio_bytes).decode()
+except FileNotFoundError:
+    st.error("⚠️ File 'musik/wedding.mp3' tidak ditemukan. Pastikan folder dan nama file sudah benar.")
 
-# TAMPILAN 1: JIKA UNDANGAN BELUM DIBUKA (SAMPUL AWAL)
-if not st.session_state.terbuka:
-    st.markdown(
-        """
-        <div class='cover' style='text-align: center; padding: 80px 20px;'>
-            <h3>The Wedding Of</h3>
-            <h1 style='font-size: 3.5rem; color: #C79A5D;'>Andi & Siti</h1>
-            <p style='margin-top: 40px; font-size: 1.2rem;'>Kepada Yth. Bapak/Ibu/Saudara/i:</p>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-    st.markdown(f"<h2 style='text-align:center;'>{guest}</h2>", unsafe_allow_html=True)
-    
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    
-    # Tombol interaksi untuk memicu izin putar audio dari browser
-    if st.button("💌 Buka Undangan", use_container_width=True):
-        st.session_state.terbuka = True
-        st.rerun()
+# --- INJEKSI HTML, AUDIO, DAN JAVASCRIPT BYPASS BROWSER ---
+# Musik disembunyikan dan dikontrol langsung via klik tombol "Buka Undangan" menggunakan Javascript murni
+if audio_base64:
+    js_audio_player = f"""
+    <audio id="wedding_music" loop>
+        <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
+    </audio>
 
-# TAMPILAN 2: JIKA UNDANGAN SUDAH DIBUKA (KONTEN UTAMA + MUSIK)
-else:
-    # --- PROSES MEMUTAR MUSIK DI LATAR BELAKANG ---
-    audio_file = "music/wedding.mp3"
-    try:
-        with open(audio_file, "rb") as f:
-            audio_bytes = f.read()
-        
-        audio_base64 = base64.b64encode(audio_bytes).decode()
-        audio_html = f"""
-            <audio autoplay loop style="display:none;">
-                <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
-            </audio>
-        """
-        st.markdown(audio_html, unsafe_allow_html=True)
-    except FileNotFoundError:
-        st.error("⚠️ File 'musik/wedding.mp3' tidak ditemukan. Pastikan folder dan nama file sudah benar.")
+    <div id="envelope-container" style="text-align: center; padding: 60px 20px; font-family: sans-serif; background: #fff; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0,0,0,0.05); margin-bottom: 30px;">
+        <h3 style="color: #666; font-weight: 300; letter-spacing: 2px;">The Wedding Of</h3>
+        <h1 style="font-size: 3rem; color: #C79A5D; margin: 10px 0 30px 0;">Andi & Siti</h1>
+        <p style="color: #888;">Kepada Yth. Bapak/Ibu/Saudara/i:</p>
+        <h2 style="color: #333; margin-bottom: 40px;">{guest}</h2>
+        <button id="open-btn" style="background-color: #C79A5D; color: white; border: none; padding: 15px 40px; font-size: 16px; font-weight: bold; border-radius: 25px; cursor: pointer; box-shadow: 0px 4px 15px rgba(199, 154, 93, 0.4); transition: 0.3s;">
+            💌 Buka Undangan
+        </button>
+    </div>
 
-    # --- KONTEN UTAMA UNDANGAN ---
-    st.markdown(
-        """
-        <div class='cover'>
-            <h3>The Wedding Of</h3>
-            <h1>Andi & Siti</h1>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    <script>
+    const audio = document.getElementById('wedding_music');
+    const btn = document.getElementById('open-btn');
+    const container = document.getElementById('envelope-container');
 
-    st.markdown(f"### Kepada Yth.\n## {guest}")
-    st.divider()
-
-    # Mempelai
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.image("images/groom.jpg", width=250)
-        st.subheader("Andi Pratama")
-        st.write("Putra Pertama dari")
-        st.write("Bapak Ahmad & Ibu Nur")
-
-    with col2:
-        st.image("images/bride.jpg", width=250)
-        st.subheader("Siti Rahma")
-        st.write("Putri Pertama dari")
-        st.write("Bapak Yusuf & Ibu Aminah")
-
-    st.divider()
-
-    # Jadwal
-    st.header("📅 Akad Nikah")
-
-    st.info("""
-    Hari : Minggu
-
-    Tanggal : 20 Desember 2026
-
-    Pukul : 09.00 WIB
-
-    Lokasi :
-    Gedung Serbaguna Makassar
-    """)
-
-    st.header("🎉 Resepsi")
-
-    st.success("""
-    Hari : Minggu
-
-    Tanggal : 20 Desember 2026
-
-    Pukul : 11.00 WIB
-
-    Lokasi :
-    Gedung Serbaguna Makassar
-    """)
-
-    st.divider()
-
-    # Countdown (Placeholder)
-    st.header("⏳ Countdown")
-    st.markdown(
+    btn.addEventListener('click', function() {{
+        // Putar audio secara instan melalui interaksi fisik (Lolos Blokir Browser)
+        audio.play().catch(function(error) {{
+            console.log("Audio play failed:", error);
+        }});
+        // Sembunyikan amplop setelah dibuka
+        container.style.display = 'none';
+    }});
+    </script>
     """
-    <h2 style='text-align:center;color:#C79A5D;'>
-    20 Desember 2026
-    </h2>
-    """,
-    unsafe_allow_html=True
+    st.components.v1.html(js_audio_player, height=380)
+
+st.divider()
+
+# --- ISI UTAMA UNDANGAN ---
+# Tampilan isi konten di bawah ini akan otomatis terlihat sejak awal, 
+# namun musik akan langsung aktif begitu tombol di atas diklik.
+
+# Mempelai
+col1, col2 = st.columns(2)
+
+with col1:
+    st.image("images/groom.jpg", width=250)
+    st.subheader("Andi Pratama")
+    st.write("Putra Pertama dari")
+    st.write("Bapak Ahmad & Ibu Nur")
+
+with col2:
+    st.image("images/bride.jpg", width=250)
+    st.subheader("Siti Rahma")
+    st.write("Putri Pertama dari")
+    st.write("Bapak Yusuf & Ibu Aminah")
+
+st.divider()
+
+# Jadwal
+st.header("📅 Akad Nikah")
+
+st.info("""
+Hari : Minggu
+
+Tanggal : 20 Desember 2026
+
+Pukul : 09.00 WIB
+
+Lokasi :
+Gedung Serbaguna Makassar
+""")
+
+st.header("🎉 Resepsi")
+
+st.success("""
+Hari : Minggu
+
+Tanggal : 20 Desember 2026
+
+Pukul : 11.00 WIB
+
+Lokasi :
+Gedung Serbaguna Makassar
+""")
+
+st.divider()
+
+# Countdown (Placeholder)
+st.header("⏳ Countdown")
+st.markdown(
+"""
+<h2 style='text-align:center;color:#C79A5D;'>
+20 Desember 2026
+</h2>
+""",
+unsafe_allow_html=True
 )
 
-    st.divider()
+st.divider()
 
-    # Galeri
-    st.header("📸 Galeri")
+# Galeri
+st.header("📸 Galeri")
 
-    cols = st.columns(3)
+cols = st.columns(3)
 
-    gallery = [
-        "images/gallery1.jpg",
-        "images/gallery1.jpg",
-        "images/gallery1.jpg"
+gallery = [
+    "images/gallery1.jpg",
+    "images/gallery1.jpg",
+    "images/gallery1.jpg"
+]
+
+for col, img in zip(cols, gallery):
+    with col:
+        st.image(img)
+
+st.divider()
+
+# Google Maps
+st.header("📍 Lokasi")
+
+st.components.v1.html("""
+<iframe
+src="https://google.com"
+width="100%"
+height="400"
+style="border:0;"
+loading="lazy">
+</iframe>
+""", height=420)
+
+st.divider()
+
+# RSVP
+st.header("💌 RSVP")
+
+nama = st.text_input("Nama")
+
+kehadiran = st.selectbox(
+    "Konfirmasi Kehadiran",
+    [
+        "Hadir",
+        "Tidak Hadir",
+        "Masih Ragu"
     ]
+)
 
-    for col, img in zip(cols, gallery):
-        with col:
-            st.image(img)
+pesan = st.text_area("Ucapan")
 
-    st.divider()
+if st.button("Kirim"):
+    st.success("Terima kasih atas konfirmasinya!")
 
-    # Google Maps
-    st.header("📍 Lokasi")
+st.divider()
 
-    st.components.v1.html("""
-    <iframe
-    src="https://google.com"
-    width="100%"
-    height="400"
-    style="border:0;"
-    loading="lazy">
-    </iframe>
-    """, height=420)
+# Gift
+st.header("🎁 Wedding Gift")
 
-    st.divider()
+st.code("""
+BCA
+1234567890
 
-    # RSVP
-    st.header("💌 RSVP")
+a.n Andi Pratama
+""")
 
-    nama = st.text_input("Nama")
-
-    kehadiran = st.selectbox(
-        "Konfirmasi Kehadiran",
-        [
-            "Hadir",
-            "Tidak Hadir",
-            "Masih Ragu"
-        ]
-    )
-
-    pesan = st.text_area("Ucapan")
-
-    if st.button("Kirim"):
-        st.success("Terima kasih atas konfirmasinya!")
-
-    st.divider()
-
-    # Gift
-    st.header("🎁 Wedding Gift")
-
-    st.code("""
-    BCA
-    1234567890
-
-    a.n Andi Pratama
-    """)
-
-    st.caption("Terima kasih atas doa dan restunya ❤️")
+st.caption("Terima kasih atas doa dan restunya ❤️")
