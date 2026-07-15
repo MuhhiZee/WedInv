@@ -1,0 +1,26 @@
+body{
+    background:#faf6f2;
+}
+
+.cover{
+    text-align:center;
+    padding:80px;
+    border-radius:20px;
+    background:linear-gradient(135deg,#f7efe7,#fff);
+}
+
+.cover h1{
+    color:#8B5E3C;
+    font-size:55px;
+}
+
+.cover h3{
+    color:#888;
+}
+
+.stButton button{
+    width:100%;
+    background:#8B5E3C;
+    color:white;
+    border-radius:10px;
+}
