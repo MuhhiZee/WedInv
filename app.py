@@ -57,7 +57,7 @@ if not st.session_state.terbuka:
 # ====================================================================
 else:
     # --- PROSES MEMUTAR AUDIO OTOMATIS SETELAH DIKLIK ---
-    audio_file = "music/wedding.mp3"
+    audio_file = "music/wed.mp3"
     try:
         with open(audio_file, "rb") as f:
             audio_bytes = f.read()
@@ -65,7 +65,7 @@ else:
         # Eksekusi pemutar audio Streamlit dengan Autoplay aktif (Lolos blokir karena dipicu st.button)
         st.audio(audio_bytes, format="audio/mp3", autoplay=True, loop=True)
     except FileNotFoundError:
-        st.error("⚠️ File 'music/wedding.mp3' tidak ditemukan. Pastikan folder dan nama file sudah benar.")
+        st.error("⚠️ File 'music/wed.mp3' tidak ditemukan. Pastikan folder dan nama file sudah benar.")
 
     # --- KONTEN UTAMA UNDANGAN ---
     st.markdown(
